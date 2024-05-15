@@ -679,9 +679,12 @@ bool AstroTrac::ReadScopeStatus()
 
     if (TransformTelescopeToCelestial(TDV, skyRA, skyDE))
     {
+        // set the pier side property, which also conforms to the ASCOM standard as defined by:
+        // https://ascom-standards.org/Help/Developer/html/P_ASCOM_DeviceInterface_ITelescopeV3_SideOfPier.htm
+        // https://download.ascom-standards.org/docs/SideOfPier(1.2).pdf
         double lst = get_local_sidereal_time(LocationN[LOCATION_LONGITUDE].value);
         double dHA = rangeHA(lst - skyRA);
-        setPierSide(dHA < 0 ? PIER_EAST : PIER_WEST);
+        setPierSide(dHA < 0 ? PIER_WEST : PIER_EAST);
 
         char mountRAString[32] = {0}, mountDEString[32] = {0}, skyRAString[32] = {0}, skyDEString[32] = {0};
         fs_sexa(mountRAString, ra, 2, 3600);
