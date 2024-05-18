@@ -660,9 +660,20 @@ bool AstroTrac::ReadScopeStatus()
         {
             if (TrackState == SCOPE_SLEWING)
             {
-                LOG_INFO("Slew complete, tracking...");
-                TrackState = SCOPE_TRACKING;
-                SetTrackEnabled(true);
+                ISwitch *sw;
+                sw = IUFindSwitch(&CoordSP, "TRACK");
+                if ((sw != nullptr) && (sw->s == ISS_ON))
+                {
+                    LOG_INFO("Slew complete, tracking...");
+                    TrackState = SCOPE_TRACKING;
+                    SetTrackEnabled(true);
+                }
+                else
+                {
+                    LOG_INFO("Slew complete, idle");
+                    TrackState = SCOPE_IDLE;
+                    SetTrackEnabled(false);
+                }
             }
             // Parking
             else
